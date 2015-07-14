@@ -28,11 +28,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.google.android.gms:play-services-gcm:7.5.+'
-
-    compile 'com.android.support:appcompat-v7:22.1.1'
-
-    // Testing dependencies
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.1'
-    androidTestCompile 'com.android.support.test:runner:0.2'
-    androidTestCompile 'com.android.support:support-annotations:22.1.1'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile files('/Users/mccarthy/Downloads/cloudmine-android-v0.6.6/cloudmine-android-v0.6.6.jar')
 }

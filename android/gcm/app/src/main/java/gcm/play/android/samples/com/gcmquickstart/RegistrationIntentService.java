@@ -23,6 +23,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import android.widget.Toast;
+import com.cloudmine.api.CMApiCredentials;
+import com.cloudmine.api.rest.CMWebService;
+import com.cloudmine.api.rest.callbacks.TokenResponseCallback;
+import com.cloudmine.api.rest.response.TokenUpdateResponse;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -87,7 +92,23 @@ public class RegistrationIntentService extends IntentService {
      *
      * @param token The new token.
      */
+    {
+
+    }
     private void sendRegistrationToServer(String token) {
+        Toast.makeText(getApplicationContext(), "Sending registration: " + token, Toast.LENGTH_LONG).show();
+        Log.e("CloudMine", "Sending registration " + token);
+        CMWebService.getService().registerForGCM(token, new TokenResponseCallback() {
+            public void onCompletion(TokenUpdateResponse response) {
+                Log.e("CloudMine", response.getMessageBody());
+                Toast.makeText(getApplicationContext(), "Received response: " + response.getMessageBody(), Toast.LENGTH_LONG).show();
+            }
+
+            public void onFailure(Throwable t, String s) {
+                Log.e("CloudMine", s, t);
+                Toast.makeText(getApplicationContext(), "Failed: " + s, Toast.LENGTH_LONG).show();
+            }
+        });
         // Add custom implementation, as needed.
     }
 

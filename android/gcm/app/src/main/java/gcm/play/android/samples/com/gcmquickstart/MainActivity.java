@@ -26,14 +26,23 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import android.widget.Toast;
+import com.cloudmine.api.CMApiCredentials;
+import com.cloudmine.api.rest.CMWebService;
+import com.cloudmine.api.rest.callbacks.TokenResponseCallback;
+import com.cloudmine.api.rest.response.TokenUpdateResponse;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String APP_ID = "4d2631c701a74e11a17197f5bcf506b5";
+    public static final String API_KEY = "a5126d647c32486e8ed525f859725df7";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private static final String TAG = "MainActivity";
 
@@ -45,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        CMApiCredentials.initialize(APP_ID, API_KEY, this);
 
         mRegistrationProgressBar = (ProgressBar) findViewById(R.id.registrationProgressBar);
         mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -63,6 +73,23 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         mInformationTextView = (TextView) findViewById(R.id.informationTextView);
+
+        ((Button)findViewById(R.id.button)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CMWebService.getService().unregisterForGCM(new TokenResponseCallback() {
+                    public void onCompletion(TokenUpdateResponse response) {
+                        Log.e("CloudMine", "2unregister" + response);
+                        Toast.makeText(getApplicationContext(), "unregister response: " + response.getMessageBody(), Toast.LENGTH_LONG).show();
+                    }
+
+                    public void onFailure(Throwable t, String s) {
+                        Log.e("CloudMine", s + "failed unregister", t);
+                        Toast.makeText(getApplicationContext(), "2Failed: " + s, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
 
         if (checkPlayServices()) {
             // Start IntentService to register this application with GCM.

@@ -45,7 +45,7 @@ public class MyGcmListenerService extends GcmListenerService {
         String message = data.getString("message");
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
-
+        Log.d(TAG, data.toString());
         /**
          * Production applications would usually process the message here.
          * Eg: - Syncing with server.
